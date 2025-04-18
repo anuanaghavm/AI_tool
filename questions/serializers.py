@@ -7,10 +7,18 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class StudentAnswerSerializer(serializers.ModelSerializer):
-    question_name = serializers.CharField(source='Question.text', read_only=True)
+    question_text = serializers.SerializerMethodField()
+    question_category = serializers.SerializerMethodField()
+    
     class Meta:
         model = StudentAnswer
-        fields = ['student','question','question_name','answer']
+        fields = ['id', 'student', 'question', 'question_text', 'question_category', 'answer']
+    
+    def get_question_text(self, obj):
+        return obj.question.text if obj.question else None
+    
+    def get_question_category(self, obj):
+        return obj.question.category if obj.question else None
 
 class PersonalSerializer(serializers.ModelSerializer):
     class Meta:

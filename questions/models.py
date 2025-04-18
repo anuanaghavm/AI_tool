@@ -47,13 +47,17 @@ class Education(models.Model):
 
     def __str__(self):
         return self.studying_in
+
 class StudentAnswer(models.Model):
     student = models.ForeignKey(Student, related_name='answers', on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='student_answers', on_delete=models.CASCADE)
     answer = models.CharField(max_length=3, choices=[('yes', 'Yes'), ('no', 'No')])
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('student', 'question')
+        ordering = ['-created_at']  # Order by most recent first
 
     def __str__(self):
         return f"{self.student.name} - {self.question.text}: {self.answer}"
