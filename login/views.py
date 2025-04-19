@@ -10,7 +10,6 @@ def get_tokens_for_user(user):
     return {
         'refresh': str(refresh),
         'access': str(refresh.access_token),
-        'role': user.role
     }
 
 class RegisterView(APIView):
@@ -19,17 +18,26 @@ class RegisterView(APIView):
         if serializer.is_valid():
             user = serializer.save()
             tokens = get_tokens_for_user(user)
-            return Response({'user registered successfully'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response({  # ✅ Make sure you are returning this
+                'message': "User registered successfully",
+                'user': serializer.data,
+                'tokens': tokens
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # ✅ Also make sure this is returned
+
+
 
 class LoginView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            user = serializer.validated_data
-            tokens = get_tokens_for_user(user)
-            return Response({'user': serializer.data,'tokens': tokens}, status=status.HTTP_200_OK)
+            tokens = get_tokens_for_user(request.user)
+            return Response({
+                'user': serializer.validated_data,
+                'tokens': tokens
+            }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+
 
 class ResetPasswordView(APIView):
     def post(self, request):

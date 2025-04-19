@@ -12,7 +12,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'phone_number', 'password', 'role']
+        fields = ['id', 'name', 'email', 'phone_number', 'password']  # ✅ no 'role' here
 
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
@@ -20,15 +20,22 @@ class RegisterSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+    role = serializers.CharField(read_only=True)  # ✅ include role
 
     def validate(self, data):
         try:
             user = User.objects.get(email=data['email'])
-            if user.password == data['password']:  # Direct password comparison
-                return user
+            if user.password == data['password']:  # Insecure, but as per your model
+                return {
+                    'email': user.email,
+                    'name': user.name,
+                    'id': user.id,
+                    'role': user.role  # ✅ include role in output
+                }
         except User.DoesNotExist:
             pass
         raise serializers.ValidationError("Invalid credentials")
+
 
 class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
