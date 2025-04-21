@@ -29,7 +29,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='student')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    # Override the password field to store plain text
     password = models.CharField(max_length=128)
 
     objects = UserManager()
