@@ -16,6 +16,7 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = ['id', 'name', 'streams']
+
 class QuestionSerializer(serializers.ModelSerializer):
     class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(), source='class_name', write_only=True)
     stream_id = serializers.PrimaryKeyRelatedField(queryset=Stream.objects.all(), source='stream_name', write_only=True)
@@ -27,10 +28,13 @@ class QuestionSerializer(serializers.ModelSerializer):
         fields = ['id','text','category','class_id','stream_id','class_name','stream_name']
 
     def get_class_name(self, obj):
-        return {
-            'id': obj.class_name.id,
-            'name': obj.class_name.name
+        if obj.class_name:
+            return {
+             'id': obj.class_name.id,
+             'name': obj.class_name.name
         }
+        return None
+
 
     def validate(self, data):
         class_instance = data.get('class_name')

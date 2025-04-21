@@ -17,8 +17,10 @@ class Stream(models.Model):
 class Question(models.Model):
     text = models.CharField(max_length=255)
     category = models.TextField()
-    class_name = models.ForeignKey(Class, related_name='questions', on_delete=models.CASCADE)
-    stream_name = models.ForeignKey(Stream, related_name='questions', on_delete=models.CASCADE)
+    class_name = models.ForeignKey(Class, on_delete=models.CASCADE, null=False)
+    stream_name = models.ForeignKey(Stream, on_delete=models.CASCADE, null=False)
+    ...
+
 
     def __str__(self):
         return self.text
