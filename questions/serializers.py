@@ -1,6 +1,11 @@
 from rest_framework import serializers
-from .models import Question, Student, StudentAnswer, Personal ,Education,Class,Stream
+from .models import Question, Student, StudentAnswer, Personal ,Education,Class,Stream,Category
 
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
 
 class StreamSerializer(serializers.ModelSerializer):
     class_name = serializers.StringRelatedField()
@@ -22,10 +27,12 @@ class QuestionSerializer(serializers.ModelSerializer):
     stream_id = serializers.PrimaryKeyRelatedField(queryset=Stream.objects.all(), source='stream_name', write_only=True)
     class_name = serializers.SerializerMethodField()
     stream_name = StreamSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True)
     
     class Meta:
         model = Question
-        fields = ['id','text','category','class_id','stream_id','class_name','stream_name']
+        fields = ['id','text','category', 'category_id','class_id','stream_id','class_name','stream_name']
 
     def get_class_name(self, obj):
         if obj.class_name:

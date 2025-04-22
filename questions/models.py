@@ -1,5 +1,12 @@
 from django.db import models
 
+class Category(models.Model):
+    name = models.CharField(max_length=400)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
 class Class(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -16,11 +23,9 @@ class Stream(models.Model):
     
 class Question(models.Model):
     text = models.CharField(max_length=255)
-    category = models.TextField()
     class_name = models.ForeignKey(Class, on_delete=models.CASCADE, null=False)
     stream_name = models.ForeignKey(Stream, on_delete=models.CASCADE, null=False)
-    ...
-
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.text
