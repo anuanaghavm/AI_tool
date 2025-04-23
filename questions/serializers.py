@@ -15,8 +15,13 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'careers']
 
 class StreamSerializer(serializers.ModelSerializer):
-    class_name = serializers.StringRelatedField()
+    class_name = serializers.StringRelatedField(read_only=True)
     class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(), source='class_name', write_only=True)
+
+    class Meta:
+        model = Stream
+        fields = ['id', 'name', 'class_name', 'class_id']
+
 
     class Meta:
         model = Stream
@@ -25,23 +30,21 @@ class StreamSerializer(serializers.ModelSerializer):
 
 class ClassSerializer(serializers.ModelSerializer):
     streams = StreamSerializer(many=True, read_only=True)
-
     class Meta:
         model = Class
         fields = ['id', 'name', 'streams']
-        read_only_fields = ['id']  # Make ID read-only to prevent None values
 
 class QuestionSerializer(serializers.ModelSerializer):
     class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(), source='class_name', write_only=True)
     stream_id = serializers.PrimaryKeyRelatedField(queryset=Stream.objects.all(), source='stream_name', write_only=True)
-    class_name = serializers.SerializerMethodField()
-    stream_name = StreamSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
+    class_name = serializers.StringRelatedField(read_only=True)
+    stream_name = serializers.StringRelatedField(read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True)
-    
+    category = serializers.StringRelatedField(read_only=True)
+
     class Meta:
         model = Question
-        fields = ['id','text','category', 'category_id','class_id','stream_id','class_name','stream_name']
+        fields = ['id', 'text', 'class_id', 'stream_id', 'class_name', 'stream_name', 'category_id', 'category']
 
     def get_class_name(self, obj):
         if obj.class_name:
@@ -55,10 +58,8 @@ class QuestionSerializer(serializers.ModelSerializer):
     def validate(self, data):
         class_instance = data.get('class_name')
         stream_instance = data.get('stream_name')
-
         if stream_instance.class_name != class_instance:
             raise serializers.ValidationError("Selected stream does not belong to the selected class.")
-
         return data
 
 class StudentAnswerSerializer(serializers.ModelSerializer):
