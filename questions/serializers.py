@@ -1,19 +1,27 @@
 from rest_framework import serializers
-from .models import Question, Student, StudentAnswer, Personal ,Education,Class,Stream,Category
+from .models import Question, Student, StudentAnswer, Personal ,Education,Class,Stream,Category,Career
 
+
+class CareerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Career
+        fields = '__all__'
 
 class CategorySerializer(serializers.ModelSerializer):
+    careers = CareerSerializer(many=True, read_only=True)
+
     class Meta:
         model = Category
-        fields = "__all__"
+        fields = ['id', 'name', 'description', 'careers']
 
 class StreamSerializer(serializers.ModelSerializer):
     class_name = serializers.StringRelatedField()
-    class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(),source='class_name',write_only=True)
+    class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(), source='class_name', write_only=True)
 
     class Meta:
         model = Stream
-        fields = ['id', 'name', 'class_name','class_id']
+        fields = ['id', 'name', 'class_name', 'class_id']
+        read_only_fields = ['id']  # Make ID read-only to prevent None values
 
 class ClassSerializer(serializers.ModelSerializer):
     streams = StreamSerializer(many=True, read_only=True)
@@ -21,6 +29,7 @@ class ClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = Class
         fields = ['id', 'name', 'streams']
+        read_only_fields = ['id']  # Make ID read-only to prevent None values
 
 class QuestionSerializer(serializers.ModelSerializer):
     class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(), source='class_name', write_only=True)

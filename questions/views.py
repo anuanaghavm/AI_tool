@@ -1,7 +1,8 @@
 from django.shortcuts import render
-from .models import Question,Student,StudentAnswer,Personal,Education,Class,Stream,Category
-from .serializers import QuestionSerializer,StudentAnswerSerializer,StudentSerializer,PersonalSerializer,EducationSerializer,ClassSerializer,StreamSerializer,CategorySerializer
+from .models import Question,Student,StudentAnswer,Personal,Education,Class,Stream,Category,Career
+from .serializers import QuestionSerializer,StudentAnswerSerializer,StudentSerializer,PersonalSerializer,EducationSerializer,ClassSerializer,StreamSerializer,CategorySerializer,CareerSerializer
 from rest_framework import generics,status
+from rest_framework.response import Response
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
@@ -10,7 +11,14 @@ class CategoryListCreateAPIView(generics.ListCreateAPIView):
 class CategoryRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    
+
+class CareerListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Career.objects.all()
+    serializer_class = CareerSerializer
+
+class CareerRetrieveupdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Career.objects.all()
+    serializer_class = CareerSerializer 
 
 class QuestionListCreateAPIView(generics.ListCreateAPIView):
     queryset = Question.objects.all()

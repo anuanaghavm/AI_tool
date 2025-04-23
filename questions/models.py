@@ -6,6 +6,15 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Career(models.Model):
+    category = models.ForeignKey(Category, related_name='careers', on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    education_pathway = models.TextField()
+
+    def __str__(self):
+        return self.name
 
 class Class(models.Model):
     name = models.CharField(max_length=100, unique=True)

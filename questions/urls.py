@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import QuestionListCreateAPIView,QuestionRetrieveUpdateDestroyAPIView,StudentListCreateAPIView,StudentRetrieveUpdateDestroyAPIView,StudentAnswerListCreateAPIView,StudentAnswerRetrieveUpdateDestroyAPIView,PersonalListCreateAPIView,PersonalRetrieveUpdateDestroyAPIView,EducationListCreateAPIView,EducationRetrieveUpdateDestroyAPIView,ClassListCreateAPIview,ClassRetrieveUpdateDestroyAPIView,StreamListCreateAPIView,StreamRetrieveUpdateDestroyAPIView,CategoryListCreateAPIView,CategoryRetrieveUpdateDestroyAPIView
+from .views import QuestionListCreateAPIView,QuestionRetrieveUpdateDestroyAPIView,StudentListCreateAPIView,StudentRetrieveUpdateDestroyAPIView,StudentAnswerListCreateAPIView,StudentAnswerRetrieveUpdateDestroyAPIView,PersonalListCreateAPIView,PersonalRetrieveUpdateDestroyAPIView,EducationListCreateAPIView,EducationRetrieveUpdateDestroyAPIView,ClassListCreateAPIview,ClassRetrieveUpdateDestroyAPIView,StreamListCreateAPIView,StreamRetrieveUpdateDestroyAPIView,CategoryListCreateAPIView,CategoryRetrieveUpdateDestroyAPIView,CareerListCreateAPIView,CareerRetrieveupdateDestroyAPIView
 
 urlpatterns = [
     path("question/",QuestionListCreateAPIView.as_view(),name="question-list-create"),
@@ -17,5 +17,8 @@ urlpatterns = [
     path('stream/',StreamListCreateAPIView.as_view(),name = "stream-list-create"),
     path("stream/<int:pk>/",StreamRetrieveUpdateDestroyAPIView.as_view(),name="stream-retrieve-update-destroy"),
     path('category/',CategoryListCreateAPIView.as_view(),name="category-list-create"),
-    path('category/<int:pk>/',CategoryRetrieveUpdateDestroyAPIView.as_view(),name="category-retrieve-update-destroy")
+    path('category/<int:pk>/',CategoryRetrieveUpdateDestroyAPIView.as_view(),name="category-retrieve-update-destroy"),
+    path('careers/', CareerListCreateAPIView.as_view(), name='careers-list-create'),
+    path("careers/<int:pk>/",CareerRetrieveupdateDestroyAPIView.as_view(), name="careers-retrieve-update-destroy")
+
 ]
