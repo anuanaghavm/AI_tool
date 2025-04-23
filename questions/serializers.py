@@ -39,7 +39,7 @@ class QuestionSerializer(serializers.ModelSerializer):
     stream_id = serializers.PrimaryKeyRelatedField(queryset=Stream.objects.all(), source='stream_name', write_only=True)
     class_name = serializers.StringRelatedField(read_only=True)
     stream_name = serializers.StringRelatedField(read_only=True)
-    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), source='category', write_only=True,required = False)
     category = serializers.StringRelatedField(read_only=True)
 
     class Meta:
