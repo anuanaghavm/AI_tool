@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import StudentListCreateAPIView,StudentRetrieveUpdateDestroyAPIView,StudentAnswerListCreateAPIView,StudentAnswerRetrieveUpdateDestroyAPIView,PersonalListCreateAPIView,PersonalRetrieveUpdateDestroyAPIView,EducationListCreateAPIView,EducationRetrieveUpdateDestroyAPIView
+from .views import StudentListCreateAPIView,StudentRetrieveUpdateDestroyAPIView,StudentAnswerListCreateAPIView,StudentAnswerRetrieveUpdateDestroyAPIView,PersonalListCreateAPIView,PersonalRetrieveUpdateDestroyAPIView,EducationListCreateAPIView,EducationRetrieveUpdateDestroyAPIView,StudentAssessmentListCreateAPIView,StudentAssessmentretrieveUpdateDestroyAPIView
 
 
 urlpatterns = [
@@ -11,6 +11,8 @@ urlpatterns = [
     path("personal/",PersonalListCreateAPIView.as_view(), name="personal-list-create"),
     path("personal/<int:pk>/",PersonalRetrieveUpdateDestroyAPIView.as_view(),name="personal-retrieve-update-destroy"),
     path('education/',EducationListCreateAPIView.as_view(),name="education-list-create"),
-    path('education/<int:pk>/',EducationRetrieveUpdateDestroyAPIView.as_view(),name="education-retrieve-update-destroy")
+    path('education/<int:pk>/',EducationRetrieveUpdateDestroyAPIView.as_view(),name="education-retrieve-update-destroy"),
+    path('student-confirm/',StudentAssessmentListCreateAPIView.as_view(),name="student-list-create"),
+    path('student-confirm/<int:pk>/',StudentAssessmentretrieveUpdateDestroyAPIView.as_view(),name="student-retrieve-update-destroy")
 
 ]

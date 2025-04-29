@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from questions.serializers import StreamSerializer
-from .models import Student,StudentAnswer,Personal,Education
+from .models import Student,StudentAnswer,Personal,Education,StudentAssessment
 from questions.models import Stream,Class,Question
 
 class StudentAnswerSerializer(serializers.ModelSerializer):
@@ -35,12 +35,11 @@ class StudentSerializer(serializers.ModelSerializer):
     class_name = serializers.SerializerMethodField()
     stream_name = StreamSerializer(read_only=True)
     answers = StudentAnswerSerializer(many=True, read_only=True)
-    assessment_count = serializers.SerializerMethodField()  # 👈 add this line
 
     class Meta:
         model = Student
         fields = [
-            'id', 'name', 'phone', 'gender', 'dob', 'email', 'address',
+            'id', 'student_uuid','name', 'phone', 'gender', 'dob', 'email', 'address',
             'personal_details', 'education_details',
             'class_id', 'stream_id',
             'class_name', 'stream_name',
@@ -53,12 +52,6 @@ class StudentSerializer(serializers.ModelSerializer):
             'name': obj.class_name.name
         }
     
-    def get_assessment_count(self, obj):
-        total_answers = obj.answers.count()
-        if total_answers == 0:
-            return 0
-        assessments = total_answers // 20  
-        return assessments
 
     def validate(self, data):
         class_instance = data.get('class_name')
@@ -67,3 +60,25 @@ class StudentSerializer(serializers.ModelSerializer):
         if stream_instance.class_name != class_instance:
             raise serializers.ValidationError("Selected stream does not belong to the selected class.")
         return data
+
+class StudentAssessmentSerializer(serializers.ModelSerializer):
+    student_uuid = serializers.UUIDField(write_only=True)
+
+    class Meta:
+        model = StudentAssessment
+        fields = ['id', 'student_uuid', 'assessment_done']
+
+    def create(self, validated_data):
+        student_uuid = validated_data.pop('student_uuid')
+        try:
+            student = Student.objects.get(student_uuid=student_uuid)
+        except Student.DoesNotExist:
+            raise serializers.ValidationError("Student with this UUID does not exist.")
+
+        confirmation = StudentAssessment.objects.create(student=student, **validated_data)
+
+        if confirmation.assessment_done:
+            student.assessment_count += 1
+            student.save()
+
+        return confirmation

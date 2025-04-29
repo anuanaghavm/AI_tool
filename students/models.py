@@ -1,5 +1,6 @@
 from django.db import models
 from questions.models import Class,Stream,Question
+import uuid
 
 
 class Student(models.Model):
@@ -8,6 +9,7 @@ class Student(models.Model):
         ('Female', 'F'),
         ('Other', 'O'),
     ]
+    student_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)  # 👈 Add this
     name = models.CharField(max_length=200)
     phone = models.TextField()
     gender = models.CharField(max_length=100, choices=GENDER_CHOICES)
@@ -16,6 +18,7 @@ class Student(models.Model):
     address = models.TextField()
     class_name = models.ForeignKey(Class, related_name='student', on_delete=models.CASCADE)
     stream_name = models.ForeignKey(Stream, related_name='student', on_delete=models.CASCADE)
+    assessment_count = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -53,3 +56,12 @@ class StudentAnswer(models.Model):
 
     def __str__(self):
         return f"Answer by {self.student.name} for question {self.question.text[:50]}"
+
+class StudentAssessment(models.Model):
+    student = models.ForeignKey(Student, related_name='confirmations', on_delete=models.CASCADE)
+    assessment_done = models.BooleanField(default=False)  
+
+    def __str__(self):
+        return f"{self.student.name} - {'Assessment Done' if self.assessment_done else 'Not Done'}"
+
+    
