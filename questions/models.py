@@ -8,10 +8,10 @@ class Category(models.Model):
         return self.name
     
 class Career(models.Model):
-    category = models.ForeignKey(Category, related_name='careers', on_delete=models.CASCADE,null=True,blank=True)
-    name = models.CharField(max_length=255,null=True,blank=True)
-    description = models.TextField(null=True,blank=True)
-    education_pathway = models.TextField(null=True,blank=True)
+    category = models.ForeignKey(Category, related_name='careers', on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    education_pathway = models.JSONField(null=True, blank=True)  # Change here
 
     def __str__(self):
         return self.name

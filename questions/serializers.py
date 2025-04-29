@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import Question,Class,Stream,Category,Career
 
 class CareerSerializer(serializers.ModelSerializer):
+    education_pathway = serializers.ListField(
+        child=serializers.CharField(), allow_null=True, required=False
+    )
     class Meta:
         model = Career
         fields = '__all__'

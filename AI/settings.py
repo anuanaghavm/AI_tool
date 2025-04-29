@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'login',
     'questions',
     'students',
+    'payments',
 ]
 
 AUTH_USER_MODEL = 'login.User'
@@ -173,3 +174,6 @@ DEFAULT_FROM_EMAIL = 'your-email@gmail.com'
 
 # Frontend URL for password reset
 FRONTEND_URL = 'http://localhost:3000'  # Change this to your frontend URL
+
+RAZORPAY_KEY_ID = 'rzp_test_Mou46QHhq1Bzws'
+RAZORPAY_KEY_SECRET = 'ztHRAFLjdmu2A0mBsuZtZvb3'
