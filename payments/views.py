@@ -14,31 +14,44 @@ client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_S
 def create_payment(request):
     if request.method == "POST":
         data = json.loads(request.body)
+
         name = data.get("name")
         email = data.get("email")
-        amount = int(data.get("amount")) * 100  # multiply for Razorpay API (paise)
+        student_uuid = data.get("student_uuid")
+        retest = data.get("retest", False)
+
+        base_amount = 199
+        gst = 0.18
+        gst_amount = base_amount*gst  # 18% GST = ₹35.82
+        final_amount = base_amount+gst_amount  # ₹234.82
+
+        razorpay_amount = int(final_amount * 100)  # in paisa
 
         # Create Razorpay Order
         razorpay_order = client.order.create({
-            "amount": amount,
+            "amount": razorpay_amount,
             "currency": "INR",
             "payment_capture": "1"
         })
 
-        # Save order in DB
+        # Save to DB
         payment = Payment.objects.create(
             name=name,
             email=email,
-            amount=amount / 100,   # Save in rupees in database
+            student_uuid=student_uuid,
+            retest=retest,
+            amount=final_amount,
+            gst_amount=gst_amount,
             razorpay_order_id=razorpay_order['id']
         )
 
         return JsonResponse({
             "order_id": razorpay_order['id'],
             "razorpay_key": settings.RAZORPAY_KEY_ID,
-            "amount": amount / 100,   # Show in rupees to client
+            "amount": final_amount,
             "currency": "INR"
         })
+
 
 @csrf_exempt
 def verify_payment(request):

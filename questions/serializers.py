@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Question,Class,Stream,Category,Career
 
+
 class CareerSerializer(serializers.ModelSerializer):
     education_pathway = serializers.ListField(
         child=serializers.CharField(), allow_null=True, required=False
@@ -15,6 +16,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'description', 'careers']
+
 
 class StreamSerializer(serializers.ModelSerializer):
     class_name = serializers.StringRelatedField(read_only=True)

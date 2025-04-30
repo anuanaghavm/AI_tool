@@ -4,28 +4,60 @@ from .models import Student,StudentAnswer,Personal,Education,StudentAssessment
 from questions.models import Stream,Class,Question
 
 class StudentAnswerSerializer(serializers.ModelSerializer):
-    student_id = serializers.PrimaryKeyRelatedField(queryset=Student.objects.all(), source='student', write_only=True)
+    student_uuid = serializers.UUIDField(write_only=True)
     question_id = serializers.PrimaryKeyRelatedField(queryset=Question.objects.all(), source='question', write_only=True)
     student_name = serializers.StringRelatedField(source='student.name', read_only=True)
     question_text = serializers.StringRelatedField(source='question.text', read_only=True)
 
     class Meta:
         model = StudentAnswer
-        fields = ['id', 'student_id', 'question_id', 'answer_text', 'student_name', 'question_text', 'created_at']
+        fields = ['id', 'student_uuid', 'question_id', 'answer_text', 'student_name', 'question_text', 'created_at']
 
     def create(self, validated_data):
-        # Create an answer for the given student and question
-        return StudentAnswer.objects.create(**validated_data)
+        student_uuid = validated_data.pop('student_uuid')
+        try:
+            student = Student.objects.get(student_uuid=student_uuid)
+        except Student.DoesNotExist:
+            raise serializers.ValidationError("Student with this UUID does not exist.")
+
+        return StudentAnswer.objects.create(student=student, **validated_data)
+    
 
 class PersonalSerializer(serializers.ModelSerializer):
+    student_uuid = serializers.UUIDField(write_only=True)
+    student_name = serializers.CharField(source='student.name', read_only=True)
+
     class Meta:
         model = Personal
-        fields = '__all__'
+        fields = ['id', 'student_uuid','student_name', 'hobbies', 'curicular_activities', 'achievements', 'internship_projects', 'languages_known']
+
+    def create(self, validated_data):
+        student_uuid = validated_data.pop('student_uuid')
+        try:
+            student = Student.objects.get(student_uuid=student_uuid)
+        except Student.DoesNotExist:
+            raise serializers.ValidationError("Student with this UUID does not exist.")
+
+        return Personal.objects.create(student=student, **validated_data)
+
 
 class EducationSerializer(serializers.ModelSerializer):
+    student_uuid = serializers.UUIDField(write_only=True)
+    student_name = serializers.CharField(source='student.name', read_only=True)
+
     class Meta:
         model = Education
-        fields = '__all__'
+        fields = ['id', 'student_uuid', 'studying_in','student_name', 'specification', 'college', 'course', 'passing_year', 'university', 'planning_to_study', 'preparing_for_entrance_exam']
+
+    def create(self, validated_data):
+        student_uuid = validated_data.pop('student_uuid')
+        try:
+            student = Student.objects.get(student_uuid=student_uuid)
+        except Student.DoesNotExist:
+            raise serializers.ValidationError("Student with this UUID does not exist.")
+
+        return Education.objects.create(student=student, **validated_data)
+
 
 class StudentSerializer(serializers.ModelSerializer):
     personal_details = PersonalSerializer(read_only=True)
