@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'questions',
     'students',
     'payments',
+    'doubtpad',
 ]
 
 AUTH_USER_MODEL = 'login.User'
@@ -177,3 +178,5 @@ FRONTEND_URL = 'http://localhost:3000'  # Change this to your frontend URL
 
 RAZORPAY_KEY_ID = 'rzp_test_Mou46QHhq1Bzws'
 RAZORPAY_KEY_SECRET = 'ztHRAFLjdmu2A0mBsuZtZvb3'
+
+OPENROUTER_API_KEY = "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"
