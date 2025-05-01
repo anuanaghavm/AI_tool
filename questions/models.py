@@ -36,6 +36,9 @@ class Question(models.Model):
     class_name = models.ForeignKey(Class, on_delete=models.CASCADE, null=False)
     stream_name = models.ForeignKey(Stream, on_delete=models.CASCADE, null=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    dimension = models.CharField(max_length=255, null=True, blank=True)
+    Primary_trait = models.CharField(max_length=255, null=True, blank=True)
+    Secondary_trait = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.text

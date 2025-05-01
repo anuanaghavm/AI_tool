@@ -48,7 +48,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['id', 'text', 'class_id', 'stream_id', 'class_name', 'stream_name', 'category_id', 'category']
+        fields = ['id', 'text', 'class_id', 'stream_id', 'class_name', 'stream_name', 'category_id', 'category','dimension', 'Primary_trait', 'Secondary_trait']
 
 
     def get_class_name(self, obj):
