@@ -48,16 +48,21 @@ INSTALLED_APPS = [
     'students',
     'payments',
     'doubtpad',
+    'calculator',
 ]
 
 AUTH_USER_MODEL = 'login.User'
 
 # REST Framework config
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
 }
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -179,4 +184,4 @@ FRONTEND_URL = 'http://localhost:3000'  # Change this to your frontend URL
 RAZORPAY_KEY_ID = 'rzp_test_Mou46QHhq1Bzws'
 RAZORPAY_KEY_SECRET = 'ztHRAFLjdmu2A0mBsuZtZvb3'
 
-OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"

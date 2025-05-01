@@ -18,6 +18,7 @@ class StudentListCreateAPIView(generics.ListCreateAPIView):
 class StudentRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    lookup_field ="student_uuid"
 
 class StudentAnswerListCreateAPIView(generics.ListCreateAPIView):
     queryset = StudentAnswer.objects.all()
