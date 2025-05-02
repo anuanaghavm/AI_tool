@@ -20,7 +20,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class StreamSerializer(serializers.ModelSerializer):
     class_name = serializers.StringRelatedField(read_only=True)
-    class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(), source='class_name', write_only=True)
+    class_id = serializers.PrimaryKeyRelatedField(queryset=Class.objects.all(), source='class_name')
 
     class Meta:
         model = Stream
