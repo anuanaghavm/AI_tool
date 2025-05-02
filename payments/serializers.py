@@ -2,6 +2,22 @@ from rest_framework import serializers
 from .models import Payment
 
 class PaymentSerializer(serializers.ModelSerializer):
+    student_uuid = serializers.UUIDField(source='student.student_uuid', read_only=True)
+    created_at = serializers.DateTimeField(format="%d-%m-%Y")
+
     class Meta:
         model = Payment
-        fields = '__all__'
+        fields = [
+            'id',
+            'student_uuid',
+            'name',
+            'email',
+            'amount',
+            'gst_amount',
+            'payment_status',
+            'razorpay_order_id',
+            'razorpay_payment_id',
+            'razorpay_signature',
+            'created_at'
+        ]
+

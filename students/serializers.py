@@ -11,7 +11,7 @@ class StudentAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = StudentAnswer
-        fields = ['id', 'student_uuid', 'question_id', 'answer_text', 'student_name', 'question_text', 'created_at',]
+        fields = ['id', 'student_uuid', 'question_id', 'answer_text', 'student_name', 'question_text', 'created_at']
 
     def create(self, validated_data):
         student_uuid = validated_data.pop('student_uuid')
