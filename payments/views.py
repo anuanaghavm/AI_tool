@@ -25,7 +25,7 @@ def create_payment(request):
         # ✅ Get Student object using UUID
         student = get_object_or_404(Student, student_uuid=student_uuid)
 
-        base_amount = 1999
+        base_amount = 1
         gst = 0.18
         gst_amount = base_amount * gst
         final_amount = base_amount + gst_amount
