@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Student,StudentAnswer,Personal,Education,StudentAssessment
-from .serializers import StudentAnswerSerializer,StudentSerializer,PersonalSerializer,EducationSerializer,StudentAssessmentSerializer
+from .models import Student,StudentAnswer,Personal,Education,StudentAssessment,Result
+from .serializers import StudentAnswerSerializer,StudentSerializer,PersonalSerializer,EducationSerializer,StudentAssessmentSerializer,ResultSerializer
 from rest_framework import generics,status
 from rest_framework.response import Response
 
@@ -51,3 +51,14 @@ class StudentAssessmentListCreateAPIView(generics.ListCreateAPIView):
 class StudentAssessmentretrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = StudentAssessment.objects.all()
     serializer_class = StudentAnswerSerializer
+
+class ResultCreateView(generics.CreateAPIView):
+    queryset = Result.objects.all()
+    serializer_class = ResultSerializer
+
+class ResultListView(generics.ListAPIView):
+    serializer_class = ResultSerializer
+
+    def get_queryset(self):
+        student_uuid = self.kwargs.get('student_uuid')
+        return Result.objects.filter(student__student_uuid=student_uuid)

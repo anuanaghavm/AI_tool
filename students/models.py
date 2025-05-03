@@ -64,4 +64,11 @@ class StudentAssessment(models.Model):
     def __str__(self):
         return f"{self.student.name} - {'Assessment Done' if self.assessment_done else 'Not Done'}"
 
-    
+class Result(models.Model):
+    student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    summary = models.JSONField() 
+    aptitude_test = models.JSONField()  # For testName, completedAt, overallScore, etc.
+    personality_test = models.JSONField()   # For individual category scores
+
+    def __str__(self):
+        return f"{self.student} - {self.summary.get('testName', '')}"

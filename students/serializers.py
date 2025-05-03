@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from questions.serializers import StreamSerializer
-from .models import Student,StudentAnswer,Personal,Education,StudentAssessment
+from .models import Student,StudentAnswer,Personal,Education,StudentAssessment,Result
 from questions.models import Stream,Class,Question
 
 class StudentAnswerSerializer(serializers.ModelSerializer):
@@ -114,3 +114,19 @@ class StudentAssessmentSerializer(serializers.ModelSerializer):
             student.save()
 
         return confirmation
+    
+class ResultSerializer(serializers.ModelSerializer):
+    student_uuid = serializers.UUIDField(write_only=True)
+    student_name = serializers.CharField(source='student.name', read_only=True)
+
+    class Meta:
+        model = Result
+        fields = ['id', 'student_uuid', 'student_name', 'summary', 'aptitude_test', 'personality_test']
+
+    def create(self, validated_data):
+        from students.models import Student
+        student_uuid = validated_data.pop('student_uuid')
+        student = Student.objects.get(student_uuid=student_uuid)
+        return Result.objects.create(student=student, **validated_data)
+
+
