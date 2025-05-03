@@ -2,6 +2,14 @@ from django.db import models
 import uuid
 from students.models import Student
 
+class PaymentAmount(models.Model):
+    amount = models.FloatField(default=0.0)  # This is the pre-GST base amount
+    gst_percentage = models.FloatField(default=18.0)  # GST in percent
+
+    def __str__(self):
+        return f"Base: {self.amount} | GST: {self.gst_percentage}%"
+
+
 class Payment(models.Model):
     PAYMENT_STATUS_CHOICES = [
         ('failed','Failed'),

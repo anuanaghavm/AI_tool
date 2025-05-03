@@ -1,6 +1,11 @@
 from rest_framework import serializers
-from .models import Payment
+from .models import Payment,PaymentAmount
 
+class PaymentAmountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentAmount
+        fields = "__all__"
+        
 class PaymentSerializer(serializers.ModelSerializer):
     student_uuid = serializers.UUIDField(source='student.student_uuid', read_only=True)
     created_at = serializers.DateTimeField(format="%d-%m-%Y")

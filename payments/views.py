@@ -3,14 +3,16 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-from .models import Payment
+from .models import Payment,PaymentAmount
+from rest_framework import generics
 import json
 import hmac
 import hashlib
 from students.models import Student
-from .serializers import PaymentSerializer
+from .serializers import PaymentSerializer,PaymentAmountSerializer
 
 client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
 
 @csrf_exempt
 def create_payment(request):
@@ -22,23 +24,25 @@ def create_payment(request):
         student_uuid = data.get("student_uuid")
         terms_condition = data.get("terms_condition", False)
 
-        # ✅ Get Student object using UUID
         student = get_object_or_404(Student, student_uuid=student_uuid)
 
-        base_amount = 1
-        gst = 0.18
-        gst_amount = base_amount * gst
+        try:
+            amount_data = PaymentAmount.objects.latest('id')
+            base_amount = amount_data.amount
+            gst_percentage = amount_data.gst_percentage
+        except PaymentAmount.DoesNotExist:
+            return JsonResponse({"error": "Payment amount not set."}, status=400)
+
+        gst_amount = base_amount * (gst_percentage / 100)
         final_amount = base_amount + gst_amount
         razorpay_amount = int(final_amount * 100)
 
-        # Create Razorpay order
         razorpay_order = client.order.create({
             "amount": razorpay_amount,
             "currency": "INR",
             "payment_capture": "1"
         })
 
-        # Save Payment
         payment = Payment.objects.create(
             student=student,
             name=name,
@@ -54,7 +58,7 @@ def create_payment(request):
             "order_id": razorpay_order['id'],
             "razorpay_key": settings.RAZORPAY_KEY_ID,
             "amount": final_amount,
-            "payment_status": payment.payment_status  # ✅ Included here
+            "payment_status": payment.payment_status
         })
 
 
@@ -93,3 +97,10 @@ def get_all_payments(request):
         serializer = PaymentSerializer(payments, many=True)
         return JsonResponse({"payments": serializer.data}, safe=False)
 
+class PaymentAmountListCreateAPIView(generics.ListCreateAPIView):
+    queryset = PaymentAmount.objects.all()
+    serializer_class = PaymentAmountSerializer
+
+class PaymentAmountRetrieveUPdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PaymentAmount.objects.all()
+    serializer_class = PaymentAmountSerializer
