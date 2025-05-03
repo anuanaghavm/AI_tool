@@ -37,3 +37,52 @@ class LoginSerializer(serializers.Serializer):
             'role': user.role,
             'user': user  # 👈 used for JWT
         }
+
+class ForgotPasswordSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    email = serializers.EmailField()
+    new_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        name = data.get('name')
+        email = data.get('email')
+        try:
+            user = User.objects.get(name=name, email=email)
+            data['user'] = user
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User not found with given name and email.")
+        return data
+
+    def save(self):
+        user = self.validated_data['user']
+        new_password = self.validated_data['new_password']
+        user.set_password(new_password)
+        user.save()
+        return user
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        current_password = data.get('current_password')
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Invalid email.")
+
+        if not user.check_password(current_password):
+            raise serializers.ValidationError("Current password is incorrect.")
+
+        data['user'] = user
+        return data
+
+    def save(self):
+        user = self.validated_data['user']
+        new_password = self.validated_data['new_password']
+        user.set_password(new_password)
+        user.save()
+        return user
