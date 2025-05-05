@@ -12,6 +12,7 @@ class Career(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     education_pathway = models.JSONField(null=True, blank=True)  # Change here
+    traits = models.JSONField(null=True, blank=True)
     score = models.TextField(null=True, blank=True)
 
     def __str__(self):

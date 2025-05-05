@@ -3,9 +3,8 @@ from .models import Question,Class,Stream,Category,Career
 
 
 class CareerSerializer(serializers.ModelSerializer):
-    education_pathway = serializers.ListField(
-        child=serializers.CharField(), allow_null=True, required=False
-    )
+    education_pathway = serializers.ListField(child=serializers.CharField(), allow_null=True, required=False)
+    traits = serializers.ListField(child = serializers.CharField(), allow_null=True, required=False)
     class Meta:
         model = Career
         fields = '__all__'
