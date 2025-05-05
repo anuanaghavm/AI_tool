@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 
+from decouple import config
+
+OPENROUTER_API_KEY = config("OPENROUTER_API_KEY")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -184,4 +188,3 @@ FRONTEND_URL = 'http://localhost:3000'  # Change this to your frontend URL
 RAZORPAY_KEY_ID = 'rzp_test_Mou46QHhq1Bzws'
 RAZORPAY_KEY_SECRET = 'ztHRAFLjdmu2A0mBsuZtZvb3'
 
-OPENROUTER_API_KEY = "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"
