@@ -188,4 +188,4 @@ FRONTEND_URL = 'http://localhost:3000'  # Change this to your frontend URL
 RAZORPAY_KEY_ID = 'rzp_test_Mou46QHhq1Bzws'
 RAZORPAY_KEY_SECRET = 'ztHRAFLjdmu2A0mBsuZtZvb3'
 
-# OPENROUTER_API_KEY = "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"
+OPENROUTER_API_KEY = "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"
