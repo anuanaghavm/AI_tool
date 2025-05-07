@@ -10,17 +10,21 @@ class AskDoubtView(APIView):
         if not question:
             return Response({"error": "Question is required"}, status=400)
 
+        # Debugging: Check API Key
+        print(f"API Key: '{settings.OPENROUTER_API_KEY}'")
+        print(f"API Key Length: {len(settings.OPENROUTER_API_KEY)}")
+
         headers = {
-            "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
-            "Content-Type": "application/json"
-        }
+        "Authorization": "Bearer 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",
+        "Content-Type": "application/json"
+    }
 
         payload = {
-        "model": "deepseek/deepseek-r1:free",
-        "prompt": f"Answer the following question briefly and factually.\nQ: {question}\nA:",
-        "max_tokens": 150,
-        "temperature": 0.5
-    }
+            "model": "deepseek/deepseek-r1:free",
+            "prompt": f"Answer the following question briefly and factually.\nQ: {question}\nA:",
+            "max_tokens": 150,
+            "temperature": 0.5
+        }
 
         try:
             response = requests.post("https://openrouter.ai/api/v1/completions", headers=headers, json=payload)
@@ -30,9 +34,8 @@ class AskDoubtView(APIView):
                 answer = data.get('choices', [{}])[0].get('text', 'No answer available')
 
                 # Clean the answer to remove unrelated content
-                # Use a regex to extract the first complete sentence or paragraph
-                cleaned_answer = re.split(r'Q:|A:', answer)[0]  # Stop at any new question or answer marker
-                cleaned_answer = " ".join(cleaned_answer.split())  # Remove extra spaces
+                cleaned_answer = re.split(r'Q:|A:', answer)[0]
+                cleaned_answer = " ".join(cleaned_answer.split())
 
                 return Response({"answer": cleaned_answer})
             else:
