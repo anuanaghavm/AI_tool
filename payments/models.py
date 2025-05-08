@@ -18,7 +18,7 @@ class Payment(models.Model):
     ]
     student = models.ForeignKey(Student, to_field='student_uuid', on_delete=models.CASCADE, related_name='payments')
     name = models.CharField(max_length=100)
-    email = models.EmailField()
+    # email = models.EmailField()
     phone_number = models.TextField()
     terms_conditions = models.BooleanField(default=False)
     amount = models.FloatField()  # final amount with GST

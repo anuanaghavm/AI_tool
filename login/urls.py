@@ -1,9 +1,8 @@
 from django.urls import path
-from .views import RegisterView, LoginView ,ForgotPasswordView , ResetPasswordView
+from .views import register_phone_number,delete_phone_number
 
 urlpatterns = [
-    path('register/', RegisterView.as_view(), name='register'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('forgot-password/', ForgotPasswordView.as_view()),
-    path('reset-password/', ResetPasswordView.as_view()),
+    path('phone-number/', register_phone_number, name='register-phone-number'),
+    path('delete-number/<str:uid>/', delete_phone_number, name='delete-phone-number'),
+
 ]

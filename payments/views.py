@@ -20,7 +20,7 @@ def create_payment(request):
         data = json.loads(request.body)
 
         name = data.get("name")
-        email = data.get("email")
+        phone_number = data.get("")
         student_uuid = data.get("student_uuid")
         terms_condition = data.get("terms_condition", False)
 
@@ -46,7 +46,7 @@ def create_payment(request):
         payment = Payment.objects.create(
             student=student,
             name=name,
-            email=email,
+            phone_number=phone_number,
             terms_conditions=terms_condition,
             amount=final_amount,
             gst_amount=gst_amount,

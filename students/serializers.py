@@ -75,7 +75,7 @@ class StudentSerializer(serializers.ModelSerializer):
             'personal_details', 'education_details',
             'class_id', 'stream_id',
             'class_name', 'stream_name',
-            'answers', 'assessment_count'  
+            'answers', 'assessment_count','firebase_user_id'
         ]
 
     def get_class_name(self, obj):

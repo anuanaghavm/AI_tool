@@ -1,60 +1,48 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import RegisterSerializer, LoginSerializer,ForgotPasswordSerializer,ResetPasswordSerializer
-from .models import User
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .models import PhoneNumber
+import firebase_admin
+from firebase_admin import credentials, auth
 
-def get_tokens_for_user(user):
-    refresh = RefreshToken.for_user(user)
-    return {
-        'refresh': str(refresh),
-        'access': str(refresh.access_token),
-    }
+# Check if Firebase is already initialized
+if not firebase_admin._apps:
+    cred = credentials.Certificate('prepbackend-firebase-adminsdk-fbsvc-ea8db2b6f8.json')  # Replace with your Firebase Admin SDK key
+    firebase_admin.initialize_app(cred)
 
-class RegisterView(APIView):
-    def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            tokens = get_tokens_for_user(user)
-            return Response({
-                'message': "User registered successfully",
-                'user': serializer.data,
-                'tokens': tokens
-            }, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+def register_phone_number(request):
+    phone_number = request.data.get('phone_number')
 
-class LoginView(APIView):
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data['user']
-            tokens = get_tokens_for_user(user)
-            return Response({
-                'user': {
-                    'id': user.id,
-                    'email': user.email,
-                    'name': user.name,
-                    'role': user.role
-                },
-                'tokens': tokens
-            }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
+    if phone_number:
+        try:
+            # Create or update Firebase user
+            user_record = auth.create_user(phone_number=phone_number)
+            uid = user_record.uid  # Extract the UID from the UserRecord
 
-class ForgotPasswordView(APIView):
-    def post(self, request):
-        serializer = ForgotPasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Password reset successfully'}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Save the phone number to the database
+            phone_entry = PhoneNumber.objects.create(phone_number=phone_number)
+            
+            return Response({"message": "Phone number registered successfully.", "uid": uid}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-class ResetPasswordView(APIView):
-    def post(self, request):
-        serializer = ResetPasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Password changed successfully'}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['DELETE'])
+def delete_phone_number(request, uid):
+    """
+    Deletes a phone number from the database and Firebase.
+    """
+    try:
+        # Delete the user from Firebase using the UID
+        auth.delete_user(uid)
+
+        # Delete the phone number from the database
+        phone_entry = get_object_or_404(PhoneNumber, phone_number=request.data.get('phone_number'))
+        phone_entry.delete()
+
+        return Response({"message": "Phone number deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

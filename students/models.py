@@ -9,7 +9,7 @@ class Student(models.Model):
         ('Female', 'F'),
         ('Other', 'O'),
     ]
-    student_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)  # 👈 Add this
+    student_uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)  
     name = models.CharField(max_length=200)
     phone = models.TextField()
     gender = models.CharField(max_length=100, choices=GENDER_CHOICES)
@@ -19,6 +19,7 @@ class Student(models.Model):
     class_name = models.ForeignKey(Class, related_name='student', on_delete=models.CASCADE)
     stream_name = models.ForeignKey(Stream, related_name='student', on_delete=models.CASCADE)
     assessment_count = models.IntegerField(default=0)
+    firebase_user_id = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name

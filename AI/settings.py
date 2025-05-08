@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'calculator',
 ]
 
-AUTH_USER_MODEL = 'login.User'
+
 
 # REST Framework config
 REST_FRAMEWORK = {

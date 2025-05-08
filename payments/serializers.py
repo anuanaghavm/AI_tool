@@ -16,7 +16,6 @@ class PaymentSerializer(serializers.ModelSerializer):
             'id',
             'student_uuid',
             'name',
-            'email',
             'amount',
             'gst_amount',
             'payment_status',
