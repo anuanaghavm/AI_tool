@@ -185,7 +185,7 @@ DEFAULT_FROM_EMAIL = 'your-email@gmail.com'
 # Frontend URL for password reset
 FRONTEND_URL = 'http://localhost:3000'  # Change this to your frontend URL
 
-RAZORPAY_KEY_ID = 'rzp_test_Mou46QHhq1Bzws'
-RAZORPAY_KEY_SECRET = 'ztHRAFLjdmu2A0mBsuZtZvb3'
+RAZORPAY_KEY_ID = 'rzp_live_EFIxwiYBRJqInn'
+RAZORPAY_KEY_SECRET = 'cCWMVzbIFhtu8JGbdrLLVmXH'
 
 OPENROUTER_API_KEY = "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"
