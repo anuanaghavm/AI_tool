@@ -20,9 +20,12 @@ def create_payment(request):
         data = json.loads(request.body)
 
         name = data.get("name")
-        phone_number = data.get("")
+        phone_number = data.get("phone_number")
         student_uuid = data.get("student_uuid")
         terms_condition = data.get("terms_condition", False)
+
+        if not phone_number:
+            return JsonResponse({"error": "Phone number is required"}, status=400)
 
         student = get_object_or_404(Student, student_uuid=student_uuid)
 
