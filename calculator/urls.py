@@ -1,7 +1,6 @@
 from django.urls import path
-from .views import SubjectCreateView, CalculatePercentageView
+from .views import ConversionCreateAPIView
 
 urlpatterns = [
-    path('subjects/create/', SubjectCreateView.as_view(), name='subject-create'),
-    path('calculate-percentage/', CalculatePercentageView.as_view(), name='calculate-percentage'),
+    path('calculate-percentage/', ConversionCreateAPIView.as_view(), name='calculate-percentage'),
 ]

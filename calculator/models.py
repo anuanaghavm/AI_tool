@@ -1,34 +1,20 @@
+# models.py
 from django.db import models
 
-GRADE_TO_MARKS = {
-    'A+': 100,
-    'A': 95, 
-    'B+': 85,
-    'B': 80,
-    'C': 70,
-    'D': 60,
-    'F': 50,
-}
+CONVERSION_CHOICES = [
+    ('marks_to_percentage', 'Marks ➝ Percentage'),
+    ('cgpa_to_percentage', 'CGPA ➝ Percentage'),
+    ('Grade_to_percentage', 'Letter Grade ➝ Marks/Percentage'),
+    ('board_specific', 'Board-Specific Conversion'),
+]
 
-class Subject(models.Model):
-    name = models.CharField(max_length=100)
+class Conversion(models.Model):
+    conversion_type = models.CharField(max_length=50, choices=CONVERSION_CHOICES)
     obtained_marks = models.FloatField(null=True, blank=True)
     total_marks = models.FloatField(null=True, blank=True)
-    marks = models.FloatField(null=True, blank=True)
-    grade = models.CharField(max_length=2, null=True, blank=True)
-
-    def save(self, *args, **kwargs):
-        if self.obtained_marks is not None and self.total_marks is not None:
-            self.marks = (self.obtained_marks / self.total_marks) * 100
-        elif self.grade and not self.marks:
-            self.marks = GRADE_TO_MARKS.get(self.grade.upper(), 0)
-        super().save(*args, **kwargs)
+    value = models.TextField(blank=True, null=True)  # For cgpa, letter grade etc.
+    percentage = models.CharField(max_length=100, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} - {self.marks} marks"
-
-class Percentage(models.Model):
-    percentage = models.FloatField()
-
-    def __str__(self):
-        return f"Percentage: {self.percentage}%"
+        return 
