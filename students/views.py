@@ -3,6 +3,18 @@ from .models import Student,StudentAnswer,Personal,Education,StudentAssessment,R
 from .serializers import StudentAnswerSerializer,StudentSerializer,PersonalSerializer,EducationSerializer,StudentAssessmentSerializer,ResultSerializer
 from rest_framework import generics,status
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
+
+class StudentPagination(PageNumberPagination):
+    page_size = 10
+
+    def get_paginated_response(self, data):
+        return Response({
+            'total_students': self.page.paginator.count,
+            'total_pages': self.page.paginator.num_pages,
+            'current_page': self.page.number,
+            'students': data
+        })
 
 class StudentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Student.objects.all()

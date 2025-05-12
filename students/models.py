@@ -19,6 +19,7 @@ class Student(models.Model):
     class_name = models.ForeignKey(Class, related_name='student', on_delete=models.CASCADE)
     stream_name = models.ForeignKey(Stream, related_name='student', on_delete=models.CASCADE)
     assessment_count = models.IntegerField(default=0)
+    is_subscribed = models.BooleanField(default=False)
     firebase_user_id = models.CharField(max_length=255)
 
     def __str__(self):

@@ -67,6 +67,7 @@ class StudentSerializer(serializers.ModelSerializer):
     class_name = serializers.SerializerMethodField()
     stream_name = StreamSerializer(read_only=True)
     answers = StudentAnswerSerializer(many=True, read_only=True)
+    is_subscribed = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = Student
@@ -75,7 +76,7 @@ class StudentSerializer(serializers.ModelSerializer):
             'personal_details', 'education_details',
             'class_id', 'stream_id',
             'class_name', 'stream_name',
-            'answers', 'assessment_count','firebase_user_id'
+            'answers', 'assessment_count','is_subscribed','firebase_user_id'
         ]
 
     def get_class_name(self, obj):
