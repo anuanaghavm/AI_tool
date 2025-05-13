@@ -86,11 +86,24 @@ def verify_payment(request):
             payment.razorpay_signature = razorpay_signature
             payment.payment_status = 'paid'
             payment.save()
+
+            # Update the student's subscription status
+            student = payment.student
+            student.is_subscribed = True
+            student.save()
+
             return JsonResponse({"status": "Payment verified successfully!"})
         else:
             payment.payment_status = 'failed'
             payment.save()
+
+            # Ensure the student is not marked as subscribed
+            student = payment.student
+            student.is_subscribed = False
+            student.save()
+
             return JsonResponse({"status": "Payment verification failed"}, status=400)
+
 
 
 @csrf_exempt
