@@ -90,8 +90,15 @@ class StudentSerializer(serializers.ModelSerializer):
         class_instance = data.get('class_name')
         stream_instance = data.get('stream_name')
 
+        # Check if the stream belongs to the class
         if stream_instance.class_name != class_instance:
             raise serializers.ValidationError("Selected stream does not belong to the selected class.")
+
+        # Unique phone number validation
+        phone_number = data.get('phone')
+        if Student.objects.filter(phone=phone_number).exists():
+            raise serializers.ValidationError({"phone": "A student with this phone number already exists."})
+
         return data
 
 class StudentAssessmentSerializer(serializers.ModelSerializer):
